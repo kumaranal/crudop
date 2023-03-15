@@ -97,10 +97,10 @@ module.exports.updatefn = async (req, res) => {
     }
 
     employeeModel
-        .findByIdAndUpdate(req.body._id, { $set: req.body }, { new: true })
+        .findByIdAndUpdate(req.body._id, { $set: userDATA }, { new: true })
         .then(() => {
             departmentModel
-                .findByIdAndUpdate(req.body._id, { $set: req.body }, { new: true })
+                .findByIdAndUpdate(req.body._id, { $set: userDATA}, { new: true })
                 .then(() => {
                     res.send("update Successfully...")
 

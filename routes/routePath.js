@@ -1,5 +1,5 @@
 const express=require("express");
-const { savefn, updatefn, deletefn, getfn } = require('../controllers/todocontroller');
+const { savefn, updatefn, deletefn, getfn } = require('../controllers/controller');
 
 const router=express.Router()
 
