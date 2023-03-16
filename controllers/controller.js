@@ -35,7 +35,7 @@ module.exports.savefn = async (req, res) => {
     }
     const userDATA = {};
     for (const [key, value] of Object.entries(req.body)) {
-        if(value == null || value ==""){
+        if (value == null || value == "") {
             return res.status(400).json({ msg: `${key} value is INVALID` });
         }
         userDATA[key] = value.toUpperCase();
@@ -80,66 +80,81 @@ module.exports.savefn = async (req, res) => {
 
 module.exports.updatefn = async (req, res) => {
     console.log("req", req.body);
-    if(req.body._id=="" || req.body._id==null ||(!req.body._id)){
+    if (req.body._id == "" || req.body._id == null || (!req.body._id)) {
         return res.status(400).json({ msg: "_id is INVALID" });
     }
-    if((req.body._id)){
+    if ((req.body._id)) {
 
-    if(req.body.Email){
-        const value = validator.validate(req.body.Email);
-        if (!value) {
-            return res.status(400).json({ msg: "EMAIL is INVALID" });
+        if (req.body.Email) {
+            const value = validator.validate(req.body.Email);
+            if (!value) {
+                return res.status(400).json({ msg: "EMAIL is INVALID" });
+            }
         }
-    }
-    
-    const userDATA = {};
-    for (const [key, value] of Object.entries(req.body)) {
-        if(value == null || value ==""){
-            return res.status(400).json({ msg: `${key} value is INVALID` });
-        }
-        userDATA[key] = value.toUpperCase();
-    }
 
-    employeeModel
-        .findByIdAndUpdate(req.body._id, { $set: userDATA }, { new: true })
-        .then(() => {
-            departmentModel
-                .findByIdAndUpdate(req.body._id, { $set: userDATA}, { new: true })
-                .then(() => {
-                    res.send("update Successfully...")
+        const userDATA = {};
+        for (const [key, value] of Object.entries(req.body)) {
+            if (value == null || value == "") {
+                return res.status(400).json({ msg: `${key} value is INVALID` });
+            }
+            userDATA[key] = value.toUpperCase();
+        }
+
+        employeeModel
+            .findByIdAndUpdate(req.body._id, { $set: userDATA }, { new: true })
+            .then((data) => {
+                if (data == null) {
+                   return res.status(400).json({ msg: "_id is INVALID" });
+                }
+                    departmentModel
+                        .findByIdAndUpdate(req.body._id, { $set: userDATA }, { new: true })
+                        .then((data) => {
+                            if (data == null) {
+                               return  res.status(400).json({ msg: "_id is INVALID" });
+                            }
+                            res.send("update Successfully...")
+
+                        })
+                        .catch((err) => console.log(err))
 
                 })
-                .catch((err) => console.log(err))
-
-        })
-        .catch((err) => {console.log(err)
-            res.status(400).json({ msg: "_id is INVALID" });
-        })
+            .catch((err) => {
+                console.log(err)
+                res.status(400).json({ msg: "_id is INVALID" });
+            })
     }
 }
 
 module.exports.deletefn = async (req, res) => {
     // console.log("req", req.body._id);
-    if(req.body._id=="" || (req.body._id==null) ||(!req.body._id)){
+    if (req.body._id == "" || (req.body._id == null) || (!req.body._id)) {
         return res.status(400).json({ msg: "_id is INVALID" });
     }
-    if(req.body._id)
-    {
-    employeeModel
-        .findByIdAndDelete(req.body._id)
-        .then(() => {
-            {
-                departmentModel
-                    .findByIdAndDelete(req.body._id)
-                    .then(() => {
-                        res.send("delete Successfully...")
+    if (req.body._id) {
+        employeeModel
+            .findByIdAndDelete(req.body._id)
+            .then(() => {
+                {
+                    departmentModel
+                        .findByIdAndDelete(req.body._id)
+                        .then((data) => {
+                            if (data != null) {
+                                res.send("delete Successfully...")
+                            }
+                            else {
+                                return res.status(400).json({ msg: "_id is INVALID" });
+                            }
 
-                    })
-                    .catch((err) => console.log(err))
-            }
-        })
-        .catch((err) => {console.log(err)
-            res.status(400).json({ msg: "_id is INVALID" });
-        })
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            return res.status(400).json({ msg: "_id is INVALID" });
+                        })
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                return res.status(400).json({ msg: "_id is INVALID" });
+            })
     }
 }
