@@ -80,6 +80,10 @@ module.exports.savefn = async (req, res) => {
 
 module.exports.updatefn = async (req, res) => {
     console.log("req", req.body);
+    if(req.body._id=="" || req.body._id==null ||(!req.body._id)){
+        return res.status(400).json({ msg: "_id is INVALID" });
+    }
+    if((req.body._id)){
 
     if(req.body.Email){
         const value = validator.validate(req.body.Email);
@@ -108,11 +112,19 @@ module.exports.updatefn = async (req, res) => {
                 .catch((err) => console.log(err))
 
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {console.log(err)
+            res.status(400).json({ msg: "_id is INVALID" });
+        })
+    }
 }
 
 module.exports.deletefn = async (req, res) => {
     // console.log("req", req.body._id);
+    if(req.body._id=="" || (req.body._id==null) ||(!req.body._id)){
+        return res.status(400).json({ msg: "_id is INVALID" });
+    }
+    if(req.body._id)
+    {
     employeeModel
         .findByIdAndDelete(req.body._id)
         .then(() => {
@@ -126,5 +138,8 @@ module.exports.deletefn = async (req, res) => {
                     .catch((err) => console.log(err))
             }
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {console.log(err)
+            res.status(400).json({ msg: "_id is INVALID" });
+        })
+    }
 }
